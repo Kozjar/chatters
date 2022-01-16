@@ -103,7 +103,9 @@ enum class ESessionType : uint8
 	/**
 	 * Spawn twitch viewers
 	 */
-	 Twitch	UMETA(DisplayName = "Twitch")
+	 Twitch	UMETA(DisplayName = "Twitch"),
+
+	 Custom	UMETA(DisplayName = "Custom")
 };
 
 class FStringHelper

@@ -65,6 +65,9 @@ public:
 		void OnPlayClick();
 
 	UFUNCTION(BlueprintCallable)
+		void SaveBotPreset(FString name, int32 amount);
+
+	UFUNCTION(BlueprintCallable)
 		void OnQuitClick();
 
 	UPROPERTY(BlueprintReadOnly)
@@ -108,6 +111,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 		void OnTwitchLoginClick();
+
+	UFUNCTION(BlueprintCallable)
+		void ResetBotPresets();
 
 	UFUNCTION(BlueprintCallable)
 		void OnTwitchLogoutClick();

@@ -4,6 +4,7 @@
 #include "MainMenuWidget.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Components/VerticalBox.h"
+#include "Components/ListView.h"
 #include "Blueprint/WidgetTree.h"
 #include "MainMenu/SettingButton.h"
 #include "../../Core/Settings/SavedSettings.h"
@@ -93,7 +94,7 @@ void UMainMenuWidget::Show()
 
 void UMainMenuWidget::OnPlayClick()
 {
-	UE_LOG(LogTemp, Warning, TEXT("[UMainMenuWidget] OnPlayClick"));
+	UE_LOG(LogTemp, Warning, TEXT("[UMainMenuWidget] OnPlayClick 123412341"));
 
 	auto* GameInstance = UChattersGameInstance::Get();
 
@@ -128,6 +129,28 @@ void UMainMenuWidget::OnQuitClick()
 		}
 	}
 
+}
+
+void UMainMenuWidget::ResetBotPresets()
+{
+	auto* SavedSettings = USavedSettings::Get();
+
+	if (SavedSettings)
+	{
+		SavedSettings->presetNames.Empty();
+		SavedSettings->presetAmounts.Empty();
+	}
+}
+
+void UMainMenuWidget::SaveBotPreset(FString name, int32 amount)
+{
+	auto* SavedSettings = USavedSettings::Get();
+
+	if (SavedSettings)
+	{
+		SavedSettings->presetNames.Add(name);
+		SavedSettings->presetAmounts.Add(amount);
+	}
 }
 
 void UMainMenuWidget::SetTab_Implementation(const EMainMenuTab NewTab, bool bPlayAnimation)

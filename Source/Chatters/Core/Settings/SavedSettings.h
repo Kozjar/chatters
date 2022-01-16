@@ -44,6 +44,12 @@ public:
 
 	UPROPERTY(VisibleAnywhere, Category = "Settings")
 		int32 MouseSensitivity = 22;
+
+	UPROPERTY(VisibleAnywhere, Category = "Settings")
+		TArray<FString> presetNames;
+
+	UPROPERTY(VisibleAnywhere, Category = "Settings")
+		TArray<int32> presetAmounts;
 public:
 	static const FString SlotName;
 

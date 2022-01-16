@@ -29,9 +29,13 @@ void USettingButton::OnClick()
 			{
 				SavedSettings->DefaultSessionType = ESessionType::Generated;
 			}
-			else
+			else if (this->SettingValue == "Viewers")
 			{
 				SavedSettings->DefaultSessionType = ESessionType::Twitch;
+			}
+			else if (this->SettingValue == "Custom")
+			{
+				SavedSettings->DefaultSessionType = ESessionType::Custom;
 			}
 		}
 		else if (this->SettingKey == TEXT("GameMode"))
@@ -98,12 +102,15 @@ UMainMenuWidget* USettingButton::GetMainMenuWidget()
 
 FString USettingButton::SessionTypeToString(ESessionType SessionType)
 {
-	if (SessionType == ESessionType::Twitch)
+	switch (SessionType)
 	{
+	case ESessionType::Twitch:
 		return TEXT("Viewers");
-	}
-	else
-	{
+	case ESessionType::Generated:
+		return TEXT("Generated");
+	case ESessionType::Custom:
+		return TEXT("Custom");
+	default:
 		return TEXT("Generated");
 	}
 }

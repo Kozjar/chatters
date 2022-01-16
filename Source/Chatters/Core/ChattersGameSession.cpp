@@ -190,6 +190,52 @@ void UChattersGameSession::LevelLoaded(FString LevelName)
 			}
 		}
 	}
+	else if (this->SessionType == ESessionType::Custom)
+	{
+		this->SessionWidget->SetPlayCommandVisibility(false);
+		if (this->SessionMode == ESessionMode::TestAiming)
+		{
+			this->MaxPlayers = 1;
+		}
+
+		auto* SavedSettings = USavedSettings::Get();
+		auto names = SavedSettings->presetNames;
+		auto amounts = SavedSettings->presetAmounts;
+
+		int32 botId = 0;
+
+		for (int32 i = 0; i != names.Num(); ++i)
+		{
+			auto Name = names[i];
+			auto Amount = amounts[i];
+
+			for (int32 botIndex = 0; botIndex < Amount; botIndex++)
+			{
+				ABot* Bot = ABot::CreateBot(World, Name, botId, this->BotSubclass, this);
+				if (Bot)
+				{
+					botId++;
+					if (Bot->Team == EBotTeam::Blue)
+					{
+						this->BlueAlive++;
+						this->BlueAliveMax = this->BlueAlive;
+
+					}
+					else if (Bot->Team == EBotTeam::Red)
+					{
+						this->RedAlive++;
+						this->RedAliveMax = this->RedAlive;
+					}
+
+					Bot->UpdateNameColor();
+
+					this->Bots.Add(Bot);
+					this->AliveBots.Add(Bot);
+					this->BotsMap.Add(Bot->DisplayName.ToLower(), Bot);
+				}
+			}
+		}
+	}
 	else
 	{
 		this->bCanViewersJoin = true;
@@ -743,6 +789,7 @@ FTransform UChattersGameSession::GetAvailableSpawnPoint(bool bRemoveSpawnPoint)
 	FTransform SpawnPointTransform;
 	
 	int32 RandNumber = FMath::RandRange(0, this->AvailableBotSpawnPoints.Num() - 1);
+
 	auto* SpawnPoint = this->AvailableBotSpawnPoints[RandNumber];
 
 	if (SpawnPoint)
@@ -750,7 +797,16 @@ FTransform UChattersGameSession::GetAvailableSpawnPoint(bool bRemoveSpawnPoint)
 		SpawnPointTransform.SetLocation(SpawnPoint->GetActorLocation());
 		SpawnPointTransform.SetRotation(FQuat(SpawnPoint->GetRotation()));
 
-		if (bRemoveSpawnPoint)
+		int32 TotalBots = 0;
+
+		auto* SavedSettings = USavedSettings::Get();
+
+		for (auto& num : SavedSettings->presetAmounts)
+		{
+			TotalBots += num;
+		}
+
+		if (bRemoveSpawnPoint && TotalBots <= 100)
 		{
 			this->AvailableBotSpawnPoints.RemoveAt(RandNumber, 1, true);
 		}
