@@ -54,6 +54,8 @@ public:
 
 	USessionWidget* GetSessionWidget();
 
+	TArray<int32> RemainingTeams;
+
 	UPROPERTY(EditDefaultsOnly, BlueprintReadOnly)
 		ESessionMode SessionMode = ESessionMode::Combat;
 

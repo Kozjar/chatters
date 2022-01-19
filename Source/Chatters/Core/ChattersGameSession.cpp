@@ -204,14 +204,28 @@ void UChattersGameSession::LevelLoaded(FString LevelName)
 
 		int32 botId = 0;
 
+		this->RemainingTeams.Empty();
+
 		for (int32 i = 0; i != names.Num(); ++i)
 		{
 			auto Name = names[i];
 			auto Amount = amounts[i];
 
+			if (this->GameModeType == ESessionGameMode::TeamsFFA)
+			{
+				this->RemainingTeams.Add(0);
+			}
+
 			for (int32 botIndex = 0; botIndex < Amount; botIndex++)
 			{
 				ABot* Bot = ABot::CreateBot(World, Name, botId, this->BotSubclass, this);
+
+				if (this->GameModeType == ESessionGameMode::TeamsFFA)
+				{
+					Bot->TeamId = i;
+					this->RemainingTeams[i] = this->RemainingTeams[i] + 1;
+				}
+
 				if (Bot)
 				{
 					botId++;
@@ -315,6 +329,13 @@ void UChattersGameSession::OnBotDied(int32 BotID)
 				this->AliveBots.RemoveAt(i, 1, true);
 			}
 
+			if (GameModeType == ESessionGameMode::TeamsFFA)
+			{
+				int32 teamIndex = AliveBot->TeamId;
+
+				this->RemainingTeams[teamIndex] = this->RemainingTeams[teamIndex] - 1;
+			}
+
 			if (AliveBot->Team == EBotTeam::Blue)
 			{
 				this->BlueAlive--;
@@ -354,6 +375,25 @@ void UChattersGameSession::OnBotDied(int32 BotID)
 			if (this->AliveBots.Num() == 1)
 			{
 				if (this->GameModeType != ESessionGameMode::Deathmatch)
+				{
+					this->OnGameEnded(this->AliveBots[0]);
+				}
+			}
+
+			if (GameModeType == ESessionGameMode::TeamsFFA)
+			{
+				int32 aliveTeams = 0;
+
+				for (int32 Index = 0; Index != this->RemainingTeams.Num(); ++Index) {
+					int32 remainingBots = this->RemainingTeams[Index];
+
+					if (remainingBots > 0)
+					{
+						aliveTeams++;
+					}
+				}
+
+				if (aliveTeams < 2)
 				{
 					this->OnGameEnded(this->AliveBots[0]);
 				}

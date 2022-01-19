@@ -40,6 +40,7 @@ ABot::ABot()
 	this->MaxHealthPoints = 100;
 	this->HealthPoints = this->MaxHealthPoints;
 	this->ID = 0;
+	this->TeamId = -1;
 	this->DisplayName = FString(TEXT(""));
 
 	this->HeadMesh = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("Head"));
@@ -1937,6 +1938,11 @@ bool ABot::IsEnemy(ABot* BotToCheck)
 	}
 
 	if (BotToCheck == this)
+	{
+		return false;
+	}
+
+	if (this->TeamId != -1 && this->TeamId == BotToCheck->TeamId)
 	{
 		return false;
 	}

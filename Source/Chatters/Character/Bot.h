@@ -135,6 +135,7 @@ public:
 		FString DisplayName = FString();
 
 	int32 ID;
+	int32 TeamId;
 
 	UPROPERTY(VisibleAnywhere, Category = "Bot")
 		int32 HealthPoints;

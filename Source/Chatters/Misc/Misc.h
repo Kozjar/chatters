@@ -25,7 +25,9 @@ enum class ESessionGameMode : uint8
 	Default,
 	Teams,
 	/** Bot with more kills in 2 minutes wins  */
-	Deathmatch
+	Deathmatch,
+	/*Like Default but same names don't attack each other*/
+	TeamsFFA
 };
 
 UENUM(BlueprintType)
